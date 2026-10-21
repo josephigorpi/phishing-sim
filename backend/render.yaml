@@ -1,1 +1,35 @@
-# Configuración de despliegue del backend en Render.
+
+services:
+  - type: web
+    name: phishing-sim-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: RESEND_FROM_NAME
+        sync: false
+      - key: N8N_WEBHOOK_SECRET
+        sync: false
+      - key: LANGFLOW_WEBHOOK_SECRET
+        sync: false
+      - key: BACKEND_PUBLIC_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: EDUCATIONAL_REDIRECT_URL
+        sync: false
+      - key: LANGFLOW_WEBHOOK_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
