@@ -3,7 +3,7 @@ import * as campaignService from '../../services/campaignService.js';
 import * as userService from '../../services/userService.js';
 import * as templateService from '../../services/templateService.js';
 import * as trackingService from '../../services/trackingService.js';
-import * as langflowService from '../../services/langflowService.js';
+import * as geminiService from '../../services/geminiService.js';
 import * as emailService from '../../services/emailService.js';
 import { supabase } from '../../config/supabaseClient.js';
 import { env } from '../../config/env.js';
@@ -15,7 +15,7 @@ import { logEvent } from '../../middlewares/logger.js';
  * Disparo mensual desde n8n. Orquesta:
  *   1. Crear/reutilizar campaña.
  *   2. Traer usuarios activos.
- *   3. Por usuario: historial -> plantilla (LangFlow o fallback BD) -> result + token -> email.
+ *   3. Por usuario: historial -> plantilla (Gemini o fallback BD) -> result + token -> email.
  *   4. Marcar campaña como 'sent'.
  */
 export async function triggerMonthlyCampaign(req, res, next) {
@@ -70,17 +70,17 @@ export async function triggerMonthlyCampaign(req, res, next) {
           : null;
         const history = await userService.getUserHistory(user.id);
 
-        // 3a. Pedir plantilla a LangFlow (puede devolver null -> fallback)
+        // 3a. Pedir plantilla a Gemini (puede devolver null -> fallback BD)
         let adapted = null;
         try {
-          adapted = await langflowService.requestAdaptedTemplate({
+          adapted = await geminiService.requestAdaptedTemplate({
             user,
             department,
             lastResults: history,
           });
-        } catch (lfErr) {
+        } catch (geminiErr) {
           console.warn(
-            `[n8n] LangFlow falló para user ${user.id}: ${lfErr.message}. Usando fallback.`
+            `[n8n] Gemini falló para user ${user.id}: ${geminiErr.message}. Usando fallback.`
           );
         }
 
@@ -94,7 +94,7 @@ export async function triggerMonthlyCampaign(req, res, next) {
             category: adapted.category || 'urgency',
             difficulty_level: adapted.difficulty_level || 'medium',
             target_department_id: user.department_id ?? null,
-            generated_by: 'langflow',
+            generated_by: 'gemini',
           });
         } else {
           const { items } = await templateService.listTemplates({
