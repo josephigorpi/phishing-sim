@@ -9,7 +9,7 @@ const required = [
   'RESEND_API_KEY',
   'RESEND_FROM_EMAIL',
   'N8N_WEBHOOK_SECRET',
-  'LANGFLOW_WEBHOOK_SECRET',
+  'GEMINI_API_KEY',
 ];
 
 const missing = required.filter((k) => !process.env[k]);
@@ -27,14 +27,13 @@ export const env = {
   resendFromEmail: process.env.RESEND_FROM_EMAIL,
   resendFromName: process.env.RESEND_FROM_NAME || 'Security Awareness',
   n8nWebhookSecret: process.env.N8N_WEBHOOK_SECRET,
-  langflowWebhookSecret: process.env.LANGFLOW_WEBHOOK_SECRET,
+  geminiApiKey: process.env.GEMINI_API_KEY,
   backendPublicUrl:
     process.env.BACKEND_PUBLIC_URL ||
     `http://localhost:${Number(process.env.PORT) || 3000}`,
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   educationalRedirectUrl:
     process.env.EDUCATIONAL_REDIRECT_URL || 'https://example.com/awareness',
-  langflowWebhookUrl: process.env.LANGFLOW_WEBHOOK_URL || '',
   corsOrigin: (process.env.CORS_ORIGIN || 'http://localhost:5173')
     .split(',')
     .map((s) => s.trim())
