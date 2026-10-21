@@ -6,7 +6,6 @@ import templates from './templates.routes.js';
 import results from './results.routes.js';
 import reports from './reports.routes.js';
 import n8nWebhook from './webhooks/n8n.routes.js';
-import langflowWebhook from './webhooks/langflow.routes.js';
 import trackingWebhook from './webhooks/tracking.routes.js';
 
 const router = Router();
@@ -21,7 +20,6 @@ router.use('/templates', templates);
 router.use('/results', results);
 router.use('/reports', reports);
 router.use('/webhooks/n8n', n8nWebhook);
-router.use('/webhooks/langflow', langflowWebhook);
 router.use('/webhooks/tracking', trackingWebhook);
 
 export default router;
