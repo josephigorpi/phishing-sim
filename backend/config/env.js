@@ -34,8 +34,7 @@ export const env = {
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   educationalRedirectUrl:
     process.env.EDUCATIONAL_REDIRECT_URL || 'https://example.com/awareness',
-  corsOrigin: (process.env.CORS_ORIGIN?.split(',').map(o => o.trim()) || [] || 'http://localhost:5173')
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean),
+  corsOrigin: process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((s) => s.trim()).filter(Boolean)
+    : ['http://localhost:5173'],
 };
