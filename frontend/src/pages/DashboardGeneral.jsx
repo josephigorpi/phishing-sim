@@ -13,6 +13,8 @@ export default function DashboardGeneral() {
   if (error) return <ErrorMessage message={error} onRetry={refetch} />;
 
   const d = data || {};
+  const totals = d.totals || {};
+  const rates = d.rates || {};
 
   return (
     <div className="page">
@@ -23,39 +25,35 @@ export default function DashboardGeneral() {
 
       <div className="metrics-grid">
         <MetricCard
-          title="Campañas totales"
-          value={d.totalCampaigns ?? 0}
+          title="Correos enviados"
+          value={totals.sent ?? 0}
           variant="primary"
         />
         <MetricCard
           title="Tasa de clics"
-          value={`${d.clickRate ?? 0}%`}
+          value={`${rates.click_rate ?? 0}%`}
           variant="warning"
         />
         <MetricCard
           title="Tasa de reportes"
-          value={`${d.reportRate ?? 0}%`}
+          value={`${rates.report_rate ?? 0}%`}
           variant="success"
         />
         <MetricCard
-          title="Risk Score global"
-          value={
-            typeof d.riskScore === 'number'
-              ? d.riskScore.toFixed(1)
-              : d.riskScore ?? '-'
-          }
+          title="Tasa de compromiso"
+          value={`${rates.compromise_rate ?? 0}%`}
           variant="info"
         />
       </div>
 
       <section className="card">
         <h2 className="card__title">Tendencia mensual</h2>
-        <TrendChart data={d.trend || []} />
+        <TrendChart data={d.monthlyTrend || []} />
       </section>
 
       <section className="card">
         <h2 className="card__title">Ranking por área</h2>
-        <DepartmentRanking departments={d.departments || []} />
+        <DepartmentRanking departments={d.byArea || []} />
       </section>
     </div>
   );
