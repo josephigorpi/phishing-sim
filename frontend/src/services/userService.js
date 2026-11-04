@@ -3,7 +3,7 @@ import api from './api';
 
 export const getUsers = async (filters = {}) => {
   const { data } = await api.get('/users', { params: filters });
-  return data.data;
+  return data.data.items ?? [];   // antes: return data.data;
 };
 
 export const getUserById = async (id) => {
