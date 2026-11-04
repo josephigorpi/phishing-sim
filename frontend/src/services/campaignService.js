@@ -4,7 +4,7 @@ import api from './api';
 export const getCampaigns = async (status) => {
   const params = status ? { status } : {};
   const { data } = await api.get('/campaigns', { params });
-  return data.data;
+  return data.data.items ?? [];   // antes: return data.data;
 };
 
 export const getCampaignById = async (id) => {
