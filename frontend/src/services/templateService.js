@@ -3,7 +3,7 @@ import api from './api';
 
 export const getTemplates = async () => {
   const { data } = await api.get('/templates');
-  return data.data;
+  return data.data.items ?? [];   // antes: return data.data;
 };
 
 export const getTemplateById = async (id) => {
