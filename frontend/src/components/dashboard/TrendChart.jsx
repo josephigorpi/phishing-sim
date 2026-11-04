@@ -30,22 +30,8 @@ export default function TrendChart({ data = [] }) {
             contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0' }}
           />
           <Legend />
-          <Line
-            type="monotone"
-            dataKey="clickRate"
-            name="Tasa de clics"
-            stroke="#2563eb"
-            strokeWidth={2}
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="reportRate"
-            name="Tasa de reportes"
-            stroke="#059669"
-            strokeWidth={2}
-            dot={false}
-          />
+          <Line type="monotone" dataKey="clicked" name="Clics" stroke="#2563eb" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="reported" name="Reportes" stroke="#059669" strokeWidth={2} dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>
