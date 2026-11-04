@@ -9,7 +9,6 @@ import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 import ErrorMessage from '../components/common/ErrorMessage.jsx';
 
 export default function DashboardByDepartment() {
-  // Listado de áreas: lo tomamos del dashboard global (una sola vez)
   const [departments, setDepartments] = useState([]);
   const [departmentId, setDepartmentId] = useState('');
 
@@ -17,20 +16,19 @@ export default function DashboardByDepartment() {
     let cancelled = false;
     getDashboard()
       .then((data) => {
-        if (!cancelled) setDepartments(data?.departments || []);
+        if (!cancelled) setDepartments(data?.byArea || []); // antes: data?.departments
       })
       .catch(() => {
         if (!cancelled) setDepartments([]);
       });
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
-  // null => no fetch si aún no se ha elegido área
   const { data, loading, error, refetch } = useDashboardData(
     departmentId ? departmentId : null
   );
+  const totals = data?.totals || {};
+  const rates = data?.rates || {};
 
   return (
     <div className="page">
@@ -49,7 +47,7 @@ export default function DashboardByDepartment() {
           >
             <option value="">— Selecciona un área —</option>
             {departments.map((d) => (
-              <option key={d.id} value={d.id}>
+              <option key={d.department_id} value={d.department_id}>
                 {d.name}
               </option>
             ))}
@@ -58,52 +56,29 @@ export default function DashboardByDepartment() {
       </div>
 
       {!departmentId && (
-        <p className="empty-state">
-          Elige un área para ver sus métricas de riesgo.
-        </p>
+        <p className="empty-state">Elige un área para ver sus métricas de riesgo.</p>
       )}
 
       {departmentId && loading && <LoadingSpinner />}
-      {departmentId && error && (
-        <ErrorMessage message={error} onRetry={refetch} />
-      )}
+      {departmentId && error && <ErrorMessage message={error} onRetry={refetch} />}
 
       {departmentId && data && (
         <>
           <div className="metrics-grid">
-            <MetricCard
-              title="Campañas del área"
-              value={data.totalCampaigns ?? 0}
-            />
-            <MetricCard
-              title="Tasa de clics"
-              value={`${data.clickRate ?? 0}%`}
-              variant="warning"
-            />
-            <MetricCard
-              title="Tasa de reportes"
-              value={`${data.reportRate ?? 0}%`}
-              variant="success"
-            />
-            <MetricCard
-              title="Risk Score del área"
-              value={
-                typeof data.riskScore === 'number'
-                  ? data.riskScore.toFixed(1)
-                  : data.riskScore ?? '-'
-              }
-              variant="info"
-            />
+            <MetricCard title="Correos enviados" value={totals.sent ?? 0} />
+            <MetricCard title="Tasa de clics" value={`${rates.click_rate ?? 0}%`} variant="warning" />
+            <MetricCard title="Tasa de reportes" value={`${rates.report_rate ?? 0}%`} variant="success" />
+            <MetricCard title="Tasa de compromiso" value={`${rates.compromise_rate ?? 0}%`} variant="info" />
           </div>
 
           <section className="card">
             <h2 className="card__title">Tendencia mensual</h2>
-            <TrendChart data={data.trend || []} />
+            <TrendChart data={data.monthlyTrend || []} />
           </section>
 
           <section className="card">
             <h2 className="card__title">Ranking de áreas</h2>
-            <DepartmentRanking departments={data.departments || []} />
+            <DepartmentRanking departments={data.byArea || []} />
           </section>
         </>
       )}
